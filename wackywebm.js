@@ -39,9 +39,9 @@ switch (inputType.toLowerCase()) {
 		type.n = 4
 		type.w = 'Shrink'
 		break
-	case 'disapear':
+	case 'disappear':
 		type.n = 5
-		type.w = 'Disapear'
+		type.w = 'Disappear'
 		break
 	default:
 		rawVideoPath.unshift(inputType)
@@ -69,7 +69,7 @@ function buildLocations() {
 }
 
 function displayUsage() {
-	console.log('WackyWebM by OIRNOIR#0032\nUsage: node wackywebm [optional_type: bounce, shutter, bounce+shutter, sporadic, shrink, disapear] [time in seconds] <input_file>')
+	console.log('WackyWebM by OIRNOIR#0032\nUsage: node wackywebm [optional_type: bounce, shutter, bounce+shutter, sporadic, shrink, disappear] [time in seconds] <input_file>')
 }
 
 async function main() {

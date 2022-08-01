@@ -23,4 +23,4 @@ You can also tweak the script to taste if you want to adjust how your file is ge
 * `Bounce+Shutter`: The simultaneous effects of `Bounce` and `Shutter`, slightly offset from each other.
 * `Sporadic`: The video glitches and wobbles randomly.
 * `Shrink`: The video shrinks vertically until it's just one pixel thin.
-* `Disapear`: The video turns into 1 pixel by 1 pixel
+* `Disappear`: The video turns into 1 pixel by 1 pixel
