@@ -12,11 +12,11 @@ const util = require('util')
 const execSync = util.promisify(require('child_process').exec)
 const getFileName = p => path.basename(p, path.extname(p))
 
-if (process.argv.length < 3 || process.argv.length > 4) return displayUsage()
+if (process.argv.length < 4 || process.argv.length > 5) return displayUsage()
 
 // Process input arguments. Assume first argument is the desired output type, and if
 // it matches none, assume part of the rawVideoPath and unshift it back before joining.
-const [inputType, ...rawVideoPath] = process.argv.slice(2),
+const [inputType,time, ...rawVideoPath] = process.argv.slice(2),
 	type = { n: 0, w: 'Bounce' }
 switch (inputType.toLowerCase()) {
 	case 'bounce':
@@ -38,6 +38,10 @@ switch (inputType.toLowerCase()) {
 	case 'shrink':
 		type.n = 4
 		type.w = 'Shrink'
+		break
+	case 'disapear':
+		type.n = 5
+		type.w = 'Disapear'
 		break
 	default:
 		rawVideoPath.unshift(inputType)
@@ -65,7 +69,7 @@ function buildLocations() {
 }
 
 function displayUsage() {
-	console.log('WackyWebM by OIRNOIR#0032\nUsage: node wackywebm [optional_type: bounce, shutter, bounce+shutter, sporadic, shrink] <input_file>')
+	console.log('WackyWebM by OIRNOIR#0032\nUsage: node wackywebm [optional_type: bounce, shutter, bounce+shutter, sporadic, shrink, disapear] [time in seconds] <input_file>')
 }
 
 async function main() {
@@ -109,6 +113,8 @@ async function main() {
 	// Sorts with a map so extraction of information only happens once per entry.
 	const tempFramesFiles = fs.readdirSync(workLocations.tempFrames)
 	const tempFramesFrames = tempFramesFiles.filter(f => f.endsWith('png')).map(f => ({ file: f, n: Number(getFileName(f)) })).sort((a, b) => a.n - b.n)
+	//gets frame
+	const frame = (parseInt(time) * decimalFramerate);
 	// Index tracked from outside. Width and/or height initialize as the maximum and are not modified if unchanged.
 	let index = 0,
 		lines = [],
@@ -117,6 +123,7 @@ async function main() {
 	process.stdout.write(`Converting frames to webm (File ${index}/${tempFramesFrames.length})...`)
 	
 	for (const { file } of tempFramesFrames) {
+		if (index >= Math.round(frame)){
 		// Makes the height/width changes based on the selected type.
 		switch (type.n) {
 			case 0:
@@ -136,7 +143,11 @@ async function main() {
 			case 4:
 				height = Math.max(1, Math.floor(maxHeight - ((index / tempFramesFrames.length) * maxHeight)));
 				break
-		}
+			case 5:
+				height = index === 0 ? maxHeight : 1
+				width = index === 0 ? maxWidth : 1
+				break
+		}}
 		// Creates the respective resized frame based on the above.
 		await execSync(`ffmpeg -y -i "${path.join(workLocations.tempFrames, file)}" -c:v vp8 -b:v 1M -crf 10 -vf scale=${width}x${height} -aspect ${width}:${height} -r ${framerate} -f webm "${path.join(workLocations.tempResizedFrames, file + '.webm')}"`)
 		// Tracks the new file for concatenation later.
