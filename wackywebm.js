@@ -114,7 +114,7 @@ async function main() {
 	const tempFramesFiles = fs.readdirSync(workLocations.tempFrames)
 	const tempFramesFrames = tempFramesFiles.filter(f => f.endsWith('png')).map(f => ({ file: f, n: Number(getFileName(f)) })).sort((a, b) => a.n - b.n)
 	//gets frame
-	const frame = (parseInt(time) * decimalFramerate);
+	const frame = (parseFloat(time) * decimalFramerate);
 	// Index tracked from outside. Width and/or height initialize as the maximum and are not modified if unchanged.
 	let index = 0,
 		lines = [],
